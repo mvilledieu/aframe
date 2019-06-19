@@ -5,7 +5,7 @@
 if (
     typeof window !== 'undefined' && // For SSR
     typeof window.navigator !== 'undefined' &&
-    // /(Helio)/g.test(navigator.userAgent) &&
+    /(Helio)/g.test(navigator.userAgent) &&
     'xr' in navigator
 ) {
   console.log('Helio WebXR Polyfill (Lumin 0.96.0)');
@@ -119,7 +119,7 @@ if (
                             }) {
                           session.baseLayer = baseLayer;
 
-                                // WebXRManager - xrSession.renderState.baseLayer Polyfill Line 219
+                        // WebXRManager - xrSession.renderState.baseLayer Polyfill Line 219
 
                           session.renderState = {
                             baseLayer: baseLayer
