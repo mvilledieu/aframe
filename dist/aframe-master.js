@@ -78757,7 +78757,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-06-19, Commit #b752e322)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-06-19, Commit #f5d5402a)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -80551,7 +80551,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
 if (
     typeof window !== 'undefined' && // For SSR
     typeof window.navigator !== 'undefined' &&
-    // /(Helio)/g.test(navigator.userAgent) &&
+    /(Helio)/g.test(navigator.userAgent) &&
     'xr' in navigator
 ) {
   console.log('Helio WebXR Polyfill (Lumin 0.96.0)');
@@ -80665,7 +80665,7 @@ if (
                             }) {
                           session.baseLayer = baseLayer;
 
-                                // WebXRManager - xrSession.renderState.baseLayer Polyfill Line 219
+                        // WebXRManager - xrSession.renderState.baseLayer Polyfill Line 219
 
                           session.renderState = {
                             baseLayer: baseLayer
