@@ -15,7 +15,7 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
     this.updateControllerList();
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
 
-    if (!navigator.getVRDisplays) { return; }
+    if (navigator.xr || !navigator.getVRDisplays) { return; }
 
     this.sceneEl.addEventListener('enter-vr', function () {
       navigator.getVRDisplays().then(function (displays) {

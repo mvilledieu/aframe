@@ -1,3 +1,4 @@
+require('./HelioWebXRPolyfill');
 var error = require('debug')('device:error');
 
 var vrDisplay;
