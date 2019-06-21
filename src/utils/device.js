@@ -1,4 +1,4 @@
-require('./HelioWebXRPolyfill');
+require('magicleap-helio-webxr-polyfill');
 var error = require('debug')('device:error');
 
 var vrDisplay;
