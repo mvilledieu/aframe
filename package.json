@@ -31,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mvilledieu/magicleap-helio-webxr-polyfill.git"
+    "url": "git+https://github.com/mvilledieu/aframe/tree/magicleap-helio-aframe-support.git"
   },
   "license": "MIT",
   "files": [

@@ -1,7 +1,9 @@
 
-<h1  align="center">/!\Experimental A-Frame/!\</h1>
+<h1  align="center">/!\ Experimental A-Frame /!\</h1>
 
-Experimental version of AFrame 0.9.2 adding support for the WebXR API used by MagicLeap helio in 0.96.0. Use at your own risk. Use while figuring out a way to fix the main AFrame lib.
+/!\ Experimental version of AFrame 0.9.2 adding support for the WebXR API used by MagicLeap helio in 0.96.0. Use at your own risk. Use while figuring out a way to fix the main AFrame lib. /!\
+
+Working examples: https://mvilledieu.github.io/aframe/examples/
 
 <p  align="center"><a  href="https://aframe.io"  target="_blank"><img  width="480"  alt="A-Frame"  src="https://user-images.githubusercontent.com/674727/32120889-230ef110-bb0f-11e7-908c-76e39aa43149.jpg"></a></p>
 
