@@ -65369,10 +65369,10 @@ function extend() {
 
 },{}],73:[function(_dereq_,module,exports){
 module.exports={
-  "name": "aframe",
-  "version": "0.9.2",
-  "description": "A web framework for building virtual reality experiences.",
-  "homepage": "https://aframe.io/",
+  "name": "ml-aframe",
+  "version": "0.9.2-rc01",
+  "description": "An experimental version of AFrame providing support for magicleap helio WebXR.",
+  "homepage": "https://mvilledieu.github.io/aframe/examples/",
   "main": "dist/aframe-master.js",
   "scripts": {
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
@@ -65399,7 +65399,10 @@ module.exports={
     "test:nobrowser": "NO_BROWSER=true npm test",
     "test:node": "mocha --ui tdd tests/node"
   },
-  "repository": "aframevr/aframe",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mvilledieu/magicleap-helio-webxr-polyfill.git"
+  },
   "license": "MIT",
   "files": [
     "dist/*",
@@ -78994,7 +78997,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-06-21, Commit #8df80812)');
+console.log('A-Frame Version: 0.9.2-rc01 (Date 2019-06-24, Commit #8f044ba6)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
