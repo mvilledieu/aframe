@@ -3976,57 +3976,47 @@ module.exports = function(buf) {
  * @author mvilledieu / http://github.com/mvilledieu
  */
 
-if (
-	typeof window !== 'undefined' && // For SSR
-	typeof window.navigator !== 'undefined' &&
-	/(Helio)/g.test(navigator.userAgent) &&
-	'xr' in navigator
-) {
+if ( 
+		typeof window !== "undefined" && // For SSR	
+		typeof window.navigator !== "undefined" &&	
+		/(Helio)/g.test( navigator.userAgent ) && 
+		"xr" in navigator 
+	) {
 
-	console.log('Helio WebXR Polyfill (Lumin 0.96.0)');
+	console.log( "Helio WebXR Polyfill (Lumin 0.96.0 & Lumin 0.97.0)" );
+
+	const isHelio96 = navigator.userAgent.includes("Chrome/73");
 
 	// WebXRManager - XR.supportSession() Polyfill - WebVR.js line 147
 
 	if (
-		'supportsSession' in navigator.xr === false &&
-		'supportsSessionMode' in navigator.xr
+		"supportsSession" in navigator.xr === false &&
+		"supportsSessionMode" in navigator.xr
 	) {
 
-		navigator.xr.supportsSession = function (sessionType) {
+		navigator.xr.supportsSession = function ( sessionType ) {
 
 			// Force using immersive-ar
-			return navigator.xr.supportsSessionMode('immersive-ar');
+			return navigator.xr.supportsSessionMode( "immersive-ar" );
 
 		};
 
 	}
 
-	if ('requestDevice' in navigator.xr === false) {
+	if ( "requestSession" in navigator.xr ) {
 
-		navigator.xr.requestDevice = function () {
+		const tempRequestSession = navigator.xr.requestSession.bind( navigator.xr );
 
-			return new Promise(function (resolve, reject) {
+		navigator.xr.requestSession = function ( sessionType ) {
 
-				resolve(navigator.xr);
+			return new Promise( function ( resolve, reject ) {
 
-			});
+				const sessionType = (isHelio96 ? {
+					mode: 'immersive-ar' // Force using immersive-ar
+				} : 'immersive-ar');
 
-		};
-
-	}
-
-	if ('requestSession' in navigator.xr) {
-
-		const tempRequestSession = navigator.xr.requestSession.bind(navigator.xr);
-
-		navigator.xr.requestSession = function (sessionType) {
-
-			return new Promise(function (resolve, reject) {
-
-				tempRequestSession({
-						mode: 'immersive-ar' // Force using immersive-ar
-					})
-					.then(function (session) {
+				tempRequestSession( sessionType )
+					.then( function ( session ) {
 
 						// WebXRManager - xrFrame.getPose() Polyfill - line 279
 
@@ -4034,22 +4024,22 @@ if (
 							session
 						);
 
-						session.requestAnimationFrame = function (callback) {
+						session.requestAnimationFrame = function ( callback ) {
 
-							return tempRequestAnimationFrame(function (time, frame) {
+							return tempRequestAnimationFrame( function ( time, frame ) {
 
 								// WebXRManager - xrFrame.getViewerPose() Polyfill - line 279
 								// Transforms view.viewMatrix to view.transform.inverse.matrix
 
-								const tempGetViewerPose = frame.getViewerPose.bind(frame);
+								const tempGetViewerPose = frame.getViewerPose.bind( frame );
 
-								frame.getViewerPose = function (referenceSpace) {
+								frame.getViewerPose = function ( referenceSpace ) {
 
-									const pose = tempGetViewerPose(referenceSpace);
+									const pose = tempGetViewerPose( referenceSpace );
 
-									pose.views.forEach(function (view) {
+									pose.views.forEach( function ( view ) {
 
-										if ('viewMatrix' in view) {
+										if ("viewMatrix" in view) {
 
 											view.transform = {
 												inverse: {
@@ -4059,7 +4049,7 @@ if (
 
 										}
 
-									});
+									} );
 
 									return pose;
 
@@ -4067,57 +4057,66 @@ if (
 
 								// WebXRManager - xrFrame.getPose() Polyfill - line 259
 
-								frame.getPose = function (targetRaySpace, referenceSpace) {
+								const tempGetPose = (isHelio96 ? null : frame.getPose.bind(frame));
 
-									const inputPose = frame.getInputPose(
-										targetRaySpace,
-										referenceSpace
-									);
+								frame.getPose = function ( targetRaySpace, referenceSpace ) {
 
-									if (
-										'targetRay' in inputPose &&
-										'transformMatrix' in inputPose.targetRay
-									) {
+									if (isHelio96) {
 
-										inputPose.transform = {
-											matrix: inputPose.targetRay.transformMatrix
-										};
+										const inputPose = frame.getInputPose(
+											targetRaySpace,
+											referenceSpace
+										);
+
+										if (
+											"targetRay" in inputPose &&
+											"transformMatrix" in inputPose.targetRay
+										) {
+
+											inputPose.transform = {
+												matrix: inputPose.targetRay.transformMatrix
+											};
+
+										}
+
+										return inputPose;
+
+									} else {
+
+										return tempGetPose(targetRaySpace.gripSpace, referenceSpace);
 
 									}
 
-									return inputPose;
-
 								};
 
-								callback(time, frame);
+								callback( time, frame );
 
-							});
+							} );
 
 						};
 
 						// WebXRManager - xrFrame.getPose( inputSource.targetRaySpace, referenceSpace) Polyfill - line 279
 
-						const tempGetInputSources = session.getInputSources.bind(session);
+						const tempGetInputSources = session.getInputSources.bind( session );
 
 						session.getInputSources = function () {
 
 							const res = tempGetInputSources();
 
-							res.forEach(function (xrInputSource) {
+							res.forEach( function (xrInputSource ) {
 
 								if (
 									xrInputSource &&
-									'targetRaySpace' in xrInputSource === false
+									"targetRaySpace" in xrInputSource === false
 								) {
 
 									Object.defineProperty(xrInputSource, 'targetRaySpace', {
 										value: xrInputSource,
 										configurable: true
 									});
-
 								}
 
-							});
+							} );
 
 							return res;
 
@@ -4127,26 +4126,19 @@ if (
 
 						session.inputSources = Object.defineProperty(
 							session,
-							'inputSources', {
-								get: session.getInputSources,
+							"inputSources",
+							{
+								get: session.getInputSources
 							}
 						);
 
 						// WebXRManager - xrSession.updateRenderState() Polyfill Line 129
 
-						if (session) {
+						if (isHelio96 && session) {
 
-							session.updateRenderState = function ({
-								baseLayer
-							}) {
+							session.updateRenderState = function ( { baseLayer } ) {
 
-								if (!baseLayer) return;
-
-								if ('baseLayer' in session) {
-
-									session.baseLayer = baseLayer;
-
-								}
+								session.baseLayer = baseLayer;
 
 								// WebXRManager - xrSession.renderState.baseLayer Polyfill Line 219
 
@@ -4160,43 +4152,43 @@ if (
 
 						// WebXRManager - xrSession.requestReferenceSpace() Polyfill Line 130
 
-						if ('requestReferenceSpace' in session) {
+						if ("requestReferenceSpace" in session) {
 
 							const tempRequestReferenceSpace = session.requestReferenceSpace.bind(
 								session
 							);
-	
+
 							const getTempRequestReferenceSpace = function () {
-	
+
 								return tempRequestReferenceSpace({
-									type: 'stationary',
-									subtype: 'floor-level'
+									type: "stationary",
+									subtype: "floor-level"
 								});
-	
+
 							};
-	
+
 							session.requestReferenceSpace = getTempRequestReferenceSpace;
-	
+
 							// Aframe a-scene.js Line 200
-	
-							if ('requestFrameOfReference' in session === false) {
-	
+
+							if ("requestFrameOfReference" in session === false) {
+
 								session.requestFrameOfReference = getTempRequestReferenceSpace;
-	
+
 							}
 
 						}
 
-						resolve(session);
+						resolve( session );
 
-					})
-					.catch(function (error) {
+					} )
+					.catch( function ( error ) {
 
-						return reject(error);
+						return reject( error );
 
-					});
+					} );
 
-			});
+			} );
 
 		};
 
@@ -65401,7 +65393,7 @@ module.exports={
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mvilledieu/magicleap-helio-webxr-polyfill.git"
+    "url": "git+https://github.com/mvilledieu/aframe/tree/magicleap-helio-aframe-support.git"
   },
   "license": "MIT",
   "files": [
@@ -65418,7 +65410,7 @@ module.exports={
     "document-register-element": "dmarcos/document-register-element#8ccc532b7f3744be954574caf3072a5fd260ca90",
     "envify": "^3.4.1",
     "load-bmfont": "^1.2.3",
-    "magicleap-helio-webxr-polyfill": "^1.0.3",
+    "magicleap-helio-webxr-polyfill": "^1.0.4",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
@@ -78997,7 +78989,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2-rc01 (Date 2019-06-24, Commit #8f044ba6)');
+console.log('A-Frame Version: 0.9.2-rc01 (Date 2019-07-11, Commit #1af39b3a)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);

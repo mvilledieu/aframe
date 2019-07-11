@@ -48,7 +48,7 @@
     "document-register-element": "dmarcos/document-register-element#8ccc532b7f3744be954574caf3072a5fd260ca90",
     "envify": "^3.4.1",
     "load-bmfont": "^1.2.3",
-    "magicleap-helio-webxr-polyfill": "^1.0.3",
+    "magicleap-helio-webxr-polyfill": "^1.0.4",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
